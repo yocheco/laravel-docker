@@ -1,43 +1,27 @@
-version: '3.7'
+version: "3.7"
+
+networks:
+  app-network:
+    driver: bridge
+
 services:
-  nginx:
-    image: nginx:alpine
-    container_name: gateway-nginx
-    restart: unless-stopped
-    expose:
-      - "80"
-    ports:
-      - 8081:80
-    volumes:
-      - ./docker/nginx:/etc/nginx/conf.d
-    depends_on:
-      - app
-    links:
-      - app
-    networks:
-      - localNetwork
-
   app:
-    image: laravel
-    build:
+    build: 
       context: ./
-      dockerfile: ./Dockerfile
-    container_name: laravel
-    expose:
-      - 9000
-    working_dir: /var/www/
-    volumes:
-      - ./:/var/www
-    depends_on:
-      - db
-    links:
-      - db
-    networks:
-      - localNetwork
-
+      dockerfile: Dockerfile
+    image: laravel8-php-fpm-80
+    container_name: app
+    restart: unless-stopped
+    tty: true
+    working_dir: /var/www
+    volumes: 
+      - ./src:/var/www
+    networks: 
+      - app-network
+        
   db:
     image: mysql:5.7
-    container_name: gateway-db
+    container_name: db
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
@@ -49,23 +33,19 @@ services:
       - ./docker-data/mysql/init:/docker-entrypoint-initdb.d
       - ./docker-data/mysql/data:/var/lib/mysql:delegated
     networks:
-      - localNetwork
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: gateway-mysql
+      - app-network
+        
+    
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
     restart: unless-stopped
-    expose:
-      - 80
-    ports:
-      - 8082:80
-    environment:
-      PMA_HOST: db
-      PMA_USER: ${DB_USERNAME}
-      PMA_PASSWORD: ${DB_PASSWORD}
-    networks:
-      - localNetwork
-
-networks:
-  localNetwork:
-    driver: bridge
+    tty: true
+    ports: 
+      - 8100:80
+    volumes: 
+      - ./src:/var/www
+      - ./docker/nginx:/etc/nginx/conf.d
+    networks: 
+      - app-network
+        

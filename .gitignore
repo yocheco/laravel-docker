@@ -1,5 +1,5 @@
 #👨🏼‍💻 Laravel
 .env
-vendor
+src/vendor
 # Docker
 docker-data

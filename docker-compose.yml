@@ -9,6 +9,9 @@ services:
     build: 
       context: ./
       dockerfile: Dockerfile
+      args:
+        user: www
+        uid: 1000
     image: laravel8-php-fpm-80
     container_name: app
     restart: unless-stopped

@@ -46,5 +46,5 @@ composer-update:
 key-generate:
 	@make exec cmd="php artisan key:generate"
 
-key-install-laravel:
+install-laravel:
 	@make exec cmd="composer create-project laravel/laravel:^8.0 ."

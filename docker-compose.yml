@@ -7,7 +7,7 @@ services:
     expose:
       - "80"
     ports:
-      - 8082:80
+      - 8081:80
     volumes:
       - ./docker/nginx:/etc/nginx/conf.d
     depends_on:
@@ -28,7 +28,41 @@ services:
     working_dir: /var/www/
     volumes:
       - ./:/var/www
+    depends_on:
+      - db
+    links:
+      - db
+    networks:
+      - localNetwork
 
+  db:
+    image: mysql:5.7
+    container_name: gateway-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      SERVICE_NAME: mysql
+    volumes:
+      - ./docker-data/mysql/init:/docker-entrypoint-initdb.d
+      - ./docker-data/mysql/data:/var/lib/mysql:delegated
+    networks:
+      - localNetwork
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: gateway-mysql
+    restart: unless-stopped
+    expose:
+      - 80
+    ports:
+      - 8082:80
+    environment:
+      PMA_HOST: db
+      PMA_USER: ${DB_USERNAME}
+      PMA_PASSWORD: ${DB_PASSWORD}
     networks:
       - localNetwork
 

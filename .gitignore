@@ -1,4 +1,5 @@
 #👨🏼‍💻 Laravel
 .env
+vendor
 # Docker
 docker-data

@@ -12,7 +12,7 @@ services:
       args:
         user: www
         uid: 1000
-    image: laravel8-php-fpm-80
+    image: laravel8
     container_name: app
     restart: unless-stopped
     tty: true
@@ -38,17 +38,27 @@ services:
     networks:
       - app-network
         
-    
   nginx:
     image: nginx:alpine
     container_name: nginx
     restart: unless-stopped
     tty: true
     ports: 
-      - 8100:80
+      - 8081:80
     volumes: 
       - ./src:/var/www
       - ./docker/nginx:/etc/nginx/conf.d
     networks: 
+      - app-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: unless-stopped
+    expose:
+      - 80
+    ports:
+      - 8082:80
+    networks:
       - app-network
         

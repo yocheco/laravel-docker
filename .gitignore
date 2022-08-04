@@ -1,5 +1,6 @@
 #👨🏼‍💻 Laravel
 .env
 src/vendor
+src/public/img/backend
 # Docker
 docker-data

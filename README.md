@@ -3,7 +3,7 @@
 
 ## Config
 
-Create laravel project in src
+Create laravel project in src "delete folder src to new instalation"
 ```
 laravel new src --jet
 ```
